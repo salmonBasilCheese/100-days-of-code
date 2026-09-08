@@ -1,0 +1,37 @@
+name: Daily Rain Alert
+
+on:
+  schedule:
+    # 毎朝 JST 06:00 (UTC 21:00) に自動実行
+    - cron: '0 21 * * *'
+  # GitHub 画面から手動実行できるようにする設定
+  workflow_dispatch:
+
+jobs:
+  check-and-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'rain_alert/requirements.txt'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r rain_alert/requirements.txt
+
+      - name: Execute Rain Alert script
+        env:
+          OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          python rain_alert/main.py
