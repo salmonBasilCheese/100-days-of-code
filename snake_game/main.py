@@ -58,6 +58,15 @@ class Snake:
         elif heading == RIGHT and current_heading != LEFT:
             self.head.setheading(RIGHT)
 
+    def reset(self) -> None:
+        """既存セグメントを不可視化・画面外退避して安全に再初期化。"""
+        for segment in self.segments:
+            segment.hideturtle()
+            segment.teleport(1000, 1000)
+        self.segments.clear()
+        self.create_snake()
+        self.head = self.segments[0]
+
 
 class Food:
     def __init__(self):
@@ -71,7 +80,6 @@ class Food:
     def refresh(self, snake_segments: list[Turtle]) -> None:
         """ヘビの体と重ならない20の倍数のグリッド座標へランダム配置。"""
         while True:
-            # -280 から 280 までの 20の倍数を生成
             rand_x = (
                 random.randint(-WALL_LIMIT // GRID_SIZE, WALL_LIMIT // GRID_SIZE)
                 * GRID_SIZE
@@ -94,18 +102,28 @@ class Food:
 class Scoreboard:
     def __init__(self):
         self.score = 0
+        self.high_score = 0
         self.writer = Turtle()
         self.writer.hideturtle()
-        self.writer.color("white")
         self.writer.penup()
         self.writer.speed("fastest")
+
+        # ゲームオーバー告知専用の描画Turtle（スコア表示と分離）
+        self.announcer = Turtle()
+        self.announcer.hideturtle()
+        self.announcer.penup()
+        self.announcer.speed("fastest")
+
         self.update_score()
 
     def update_score(self) -> None:
         self.writer.clear()
+        self.writer.color("white")
         self.writer.teleport(0, 260)
         self.writer.write(
-            f"Score: {self.score}", align="center", font=("Arial", 14, "bold")
+            f"Score: {self.score}   High Score: {self.high_score}",
+            align="center",
+            font=("Arial", 14, "bold"),
         )
 
     def increase_score(self) -> None:
@@ -113,9 +131,26 @@ class Scoreboard:
         self.update_score()
 
     def game_over(self) -> None:
-        self.writer.teleport(0, 0)
-        self.writer.color("red")
-        self.writer.write("GAME OVER", align="center", font=("Arial", 24, "bold"))
+        """ゲームオーバー告知の描画と最高スコアの確定更新"""
+        if self.score > self.high_score:
+            self.high_score = self.score
+            self.update_score()
+
+        self.announcer.clear()
+        self.announcer.color("red")
+        self.announcer.teleport(0, 20)
+        self.announcer.write("GAME OVER", align="center", font=("Arial", 24, "bold"))
+        self.announcer.color("white")
+        self.announcer.teleport(0, -20)
+        self.announcer.write(
+            "Press SPACE to Restart", align="center", font=("Arial", 14, "normal")
+        )
+
+    def reset_score(self) -> None:
+        """リトライ時のスコア初期化（最高スコアは維持）"""
+        self.announcer.clear()
+        self.score = 0
+        self.update_score()
 
 
 class InputManager:
@@ -126,7 +161,6 @@ class InputManager:
         self.snake = snake
         self.pressed_keys: set[str] = set()
 
-        # 各キーの押下・解放リスナー設定
         for key in ["Up", "w", "Down", "s", "Left", "a", "Right", "d"]:
             self.screen.onkeypress(lambda k=key: self.key_down(k), key)
             self.screen.onkeyrelease(lambda k=key: self.key_up(k), key)
@@ -137,12 +171,10 @@ class InputManager:
     def key_up(self, key: str) -> None:
         self.pressed_keys.discard(key)
 
+    def clear_keys(self) -> None:
+        self.pressed_keys.clear()
+
     def process_input(self) -> None:
-        """
-        フレームごとに呼び出し。
-        押下キーがちょうど1方向のときのみ方向転換を受け付ける（同時押し時は無効化）。
-        """
-        # 方向ごとにグループ化
         active_directions = set()
         if "Up" in self.pressed_keys or "w" in self.pressed_keys:
             active_directions.add(UP)
@@ -153,7 +185,6 @@ class InputManager:
         if "Right" in self.pressed_keys or "d" in self.pressed_keys:
             active_directions.add(RIGHT)
 
-        # ちょうど1方向のみ押されている場合のみ方向を変更
         if len(active_directions) == 1:
             target_heading = active_directions.pop()
             self.snake.set_heading(target_heading)
@@ -173,52 +204,62 @@ def main() -> None:
     scoreboard = Scoreboard()
     input_manager = InputManager(screen, snake)
 
+    is_game_over = False
+
+    def restart_game() -> None:
+        nonlocal is_game_over
+        if is_game_over:
+            snake.reset()
+            food.refresh(snake.segments)
+            scoreboard.reset_score()
+            input_manager.clear_keys()
+            is_game_over = False
+
     screen.listen()
+    screen.onkeypress(restart_game, "space")
 
     # 初期描画
     screen.update()
 
-    game_is_on = True
+    running = True
     try:
-        while game_is_on:
+        while running:
             screen.update()
             time.sleep(0.1)
 
-            # 入力の処理（同時押しチェック）
-            input_manager.process_input()
+            if not is_game_over:
+                # 入力処理
+                input_manager.process_input()
 
-            # ヘビの前進
-            snake.move()
+                # ヘビの前進
+                snake.move()
 
-            # 1. エサとの衝突判定（捕獲）
-            if snake.head.distance(food.position()) < 15:
-                food.refresh(snake.segments)
-                snake.extend()
-                scoreboard.increase_score()
+                # 1. エサとの衝突判定（捕獲）
+                if snake.head.distance(food.position()) < 15:
+                    food.refresh(snake.segments)
+                    snake.extend()
+                    scoreboard.increase_score()
 
-            # 2. 壁との衝突判定（境界値: ±280）
-            if (
-                snake.head.xcor() > WALL_LIMIT
-                or snake.head.xcor() < -WALL_LIMIT
-                or snake.head.ycor() > WALL_LIMIT
-                or snake.head.ycor() < -WALL_LIMIT
-            ):
-                game_is_on = False
-                scoreboard.game_over()
-                screen.update()
-
-            # 3. 自己衝突判定（頭と首以降の全セグメントとの距離判定）
-            for segment in snake.segments[1:]:
-                if snake.head.distance(segment) < 10:
-                    game_is_on = False
+                # 2. 壁との衝突判定（境界値: ±280）
+                if (
+                    snake.head.xcor() > WALL_LIMIT
+                    or snake.head.xcor() < -WALL_LIMIT
+                    or snake.head.ycor() > WALL_LIMIT
+                    or snake.head.ycor() < -WALL_LIMIT
+                ):
+                    is_game_over = True
                     scoreboard.game_over()
-                    screen.update()
-                    break
+
+                # 3. 自己衝突判定
+                for segment in snake.segments[1:]:
+                    if snake.head.distance(segment) < 10:
+                        is_game_over = True
+                        scoreboard.game_over()
+                        break
 
         screen.mainloop()
 
-    except turtle.Terminator:
-        # ウィンドウの×ボタン押下時の安全終了
+    except (turtle.Terminator, Exception):
         pass
 
 
