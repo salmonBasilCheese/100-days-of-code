@@ -1,0 +1,4 @@
+name,email,year,month,day
+TestUser,your_test_email@gmail.com,1995,9,8
+Alice,alice@example.com,1998,12,24
+Bob,bob@example.com,2001,1,15
