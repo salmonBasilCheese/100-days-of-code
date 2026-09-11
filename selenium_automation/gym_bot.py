@@ -14,7 +14,6 @@ from selenium.common.exceptions import (
 TARGET_URL = "https://appbrewery.github.io/gym/"
 EMAIL = "student@test.com"
 PASSWORD = "password123"
-# 略称・フル表記の両方に対応
 TARGET_DAYS = ["tuesday", "tue", "thursday", "thu"]
 MAX_RETRIES = 3
 TIMEOUT_SECONDS = 15
@@ -41,7 +40,6 @@ wait = WebDriverWait(driver, TIMEOUT_SECONDS)
 def handle_browser_alert():
     try:
         alert = driver.switch_to.alert
-        print(f"[*] アラート検知: {alert.text}")
         alert.accept()
         time.sleep(1)
     except NoAlertPresentException:
@@ -67,6 +65,12 @@ def navigate_with_retry(url, max_attempts=MAX_RETRIES):
             time.sleep(2)
     raise TimeoutException(f"[Fatal] {url} へのアクセスに失敗しました。")
 
+
+# --- 集計用カウンタ ---
+count_booked = 0
+count_waitlist = 0
+count_already_booked = 0
+count_tue_6pm = 0
 
 try:
     # 1. サイトアクセス
@@ -112,7 +116,7 @@ try:
     time.sleep(1)
     handle_browser_alert()
 
-    # 4. ログイン完了の同期（Logout や Bookings リンク、またはフォーム消失を待機）
+    # 4. ログイン完了の同期
     print("[*] ログインセッション確立を待機中...")
     wait.until(
         EC.any_of(
@@ -129,96 +133,61 @@ try:
     time.sleep(2)
 
     # 5. スケジュールの解析と火曜・木曜枠の抽出
-    # パターンA: 週間テーブル形式 (th に曜日が並び、各列に対応するセルがある構造)
-    # パターンB: リスト・カード形式
     booked_classes = []
+    print("[*] スケジュールを走査中...")
 
-    # まずテーブル構造（カレンダー）を探索
-    headers = driver.find_elements(By.XPATH, "//table//th")
-    target_col_indices = []
+    cards = driver.find_elements(
+        By.XPATH,
+        "//*[self::div or self::tr][.//button or .//a[contains(@class, 'btn')]]",
+    )
 
-    if headers:
-        for idx, th in enumerate(headers):
-            th_text = th.text.strip().lower()
-            if any(target in th_text for target in TARGET_DAYS):
-                target_col_indices.append(idx + 1)  # XPath は 1-indexed
-
-    if target_col_indices:
-        print(f"[*] カレンダー形式の火曜・木曜列を特定: 列番号 {target_col_indices}")
-        for col_idx in target_col_indices:
-            cells = driver.find_elements(By.XPATH, f"//table//tbody//tr/td[{col_idx}]")
-            for cell in cells:
-                try:
-                    cell_text = cell.text.strip()
-                    if not cell_text:
-                        continue
-
-                    buttons = cell.find_elements(
-                        By.XPATH, ".//button | .//a[contains(@class, 'btn')]"
-                    )
-                    for btn in buttons:
-                        b_text = btn.text.strip().lower()
-                        if "book" in b_text and "booked" not in b_text:
-                            print(
-                                f"[*] 予約を実行: {cell_text.splitlines()[0]} -> '{btn.text}'"
-                            )
-                            safe_click(btn)
-                            time.sleep(1)
-                            booked_classes.append(cell_text.splitlines()[0])
-                            break
-                        elif "waitlist" in b_text:
-                            print(
-                                f"[*] 待機リストに参加: {cell_text.splitlines()[0]} -> '{btn.text}'"
-                            )
-                            safe_click(btn)
-                            time.sleep(1)
-                            booked_classes.append(
-                                f"{cell_text.splitlines()[0]} (Waitlist)"
-                            )
-                            break
-                        elif "booked" in b_text:
-                            print(f"[*] 既に予約済み: {cell_text.splitlines()[0]}")
-                            break
-                except StaleElementReferenceException:
-                    continue
-    else:
-        # テーブルヘッダーで見つからない場合、全カード・行要素から走査
-        print("[*] リスト/カード形式で探索します...")
-        cards = driver.find_elements(
-            By.XPATH,
-            "//*[self::div or self::tr][.//button or .//a[contains(@class, 'btn')]]",
-        )
-        for card in cards:
-            try:
-                card_text = card.text.strip()
-                if not card_text:
-                    continue
-
-                card_text_lower = card_text.lower()
-                if any(day in card_text_lower for day in TARGET_DAYS):
-                    summary = card_text.splitlines()[0]
-                    buttons = card.find_elements(
-                        By.XPATH, ".//button | .//a[contains(@class, 'btn')]"
-                    )
-                    for btn in buttons:
-                        b_text = btn.text.strip().lower()
-                        if "book" in b_text and "booked" not in b_text:
-                            print(f"[*] 予約を実行: {summary} -> '{btn.text}'")
-                            safe_click(btn)
-                            time.sleep(1)
-                            booked_classes.append(summary)
-                            break
-                        elif "waitlist" in b_text:
-                            print(f"[*] 待機リストに参加: {summary} -> '{btn.text}'")
-                            safe_click(btn)
-                            time.sleep(1)
-                            booked_classes.append(f"{summary} (Waitlist)")
-                            break
-                        elif "booked" in b_text:
-                            print(f"[*] 既に予約済み: {summary}")
-                            break
-            except StaleElementReferenceException:
+    for card in cards:
+        try:
+            card_text = card.text.strip()
+            if not card_text:
                 continue
+
+            card_text_lower = card_text.lower()
+
+            # 対象曜日（火曜または木曜）が含まれているか判定
+            if any(day in card_text_lower for day in TARGET_DAYS):
+                summary = card_text.splitlines()[0]
+
+                # 火曜日の午後6時（6:00 PM / 18:00）開始のクラス判定
+                is_tue = "tue" in card_text_lower or "tuesday" in card_text_lower
+                is_6pm = (
+                    "6:00 pm" in card_text_lower
+                    or "6pm" in card_text_lower
+                    or "18:00" in card_text_lower
+                )
+                if is_tue and is_6pm:
+                    count_tue_6pm += 1
+
+                buttons = card.find_elements(
+                    By.XPATH, ".//button | .//a[contains(@class, 'btn')]"
+                )
+                for btn in buttons:
+                    b_text = btn.text.strip().lower()
+                    if "book" in b_text and "booked" not in b_text:
+                        print(f"[*] 予約を実行: {summary} -> '{btn.text}'")
+                        safe_click(btn)
+                        time.sleep(1)
+                        booked_classes.append(summary)
+                        count_booked += 1
+                        break
+                    elif "waitlist" in b_text:
+                        print(f"[*] 待機リストに参加: {summary} -> '{btn.text}'")
+                        safe_click(btn)
+                        time.sleep(1)
+                        booked_classes.append(f"{summary} (Waitlist)")
+                        count_waitlist += 1
+                        break
+                    elif "booked" in b_text:
+                        print(f"[*] 既に予約済み: {summary}")
+                        count_already_booked += 1
+                        break
+        except StaleElementReferenceException:
+            continue
 
     # 6. My Bookings で予約状態の検証
     print("\n[*] 'My Bookings' へ遷移して予約内容を確認します...")
@@ -249,6 +218,13 @@ try:
         else:
             print(f"[CHECK] 反映未確認（要手動確認）: {booked}")
     print("==========================================================")
+
+    # 7. 指定フォーマットによる予約概要の表示
+    print("\n--- 予約概要 ---")
+    print(f"クラス数 予約済み ：   {count_booked}")
+    print(f"待機リスト に参加した 人数：   {count_waitlist}")
+    print(f"既に 予約済み ／ キャンセル待ち ：   {count_already_booked}")
+    print(f"件数  火曜日の午後  6時開始 の授業処理 ：   {count_tue_6pm}件\n")
 
     time.sleep(2)
 
