@@ -1,7 +1,7 @@
 # 100 Days of Code: Python Learning Projects
 
 Udemy講座「100 Days of Code: The Complete Python Pro Bootcamp」の実践リポジトリです。
-基礎構文からOOP、GUI、Web API連携、Webスクレイピング、自動化スクリプトまでを網羅的に実装しています。
+基礎構文からOOP、GUI、Web API連携、Webスクレイピング、ブラウザ自動化（Selenium）までを網羅的に実装しています。
 
 ---
 
@@ -46,10 +46,22 @@ Udemy講座「100 Days of Code: The Complete Python Pro Bootcamp」の実践リ�
 
 ---
 
+### 4. Webスクレイピング & ブラウザ自動化 (BeautifulSoup / Selenium)
+| プロジェクト名 | 概要 | 主な技術・ライブラリ |
+| :--- | :--- | :--- |
+| **`cookie_clicker_bot`** | クッキークリッカーの自動プレイおよび最適アップグレード購入Bot | `selenium`, DOM走査, タイマー制御 |
+| **`tinder_swiping_bot`** | 認証ログインおよびマッチングアプリの自動スワイプ・例外ハンドリングBot | `selenium`, モーダル破棄, 例外処理 |
+| **`speed_bot`** | Speedtestで回線速度を自動計測し、閾値に応じて投稿サービスへ自動報告 | `selenium`, `WebDriverWait`, 非同期測定検知 |
+| **`insta_clone_follower`** | ターゲットユーザーのフォロワーモーダルをスクロールし、順次フォロー | `selenium`, 局所スクロール, 状態フィルタリング |
+| **`data_entry_bot`** | Zillowクローンから物件情報をスクレイピングし、Googleフォームへ自動転記 | `beautifulsoup4`, `requests`, `selenium`, 正規表現 |
+
+---
+
 ## 🛠 開発環境・セットアップ
 
 ### 必要要件
 * Python 3.10 以上
+* Google Chrome および対応バージョンの ChromeDriver (Selenium Managerにより自動解決)
 * 各プロジェクトフォルダごとの `requirements.txt` / `.env`
 
 ### 基本セットアップ
@@ -59,14 +71,5 @@ python -m venv .venv
 # Windows PowerShell
 .venv\Scripts\Activate.ps1
 
-# プロジェクトごとの依存パッケージインストール (例: flight_deal_finder)
-pip install -r flight_deal_finder/requirements.txt
-
-### 環境変数管理
-APIキーや認証情報を含む各プロジェクト（`flight_deal_finder`, `stock_news_alert` 等）には `.env.example` が配置されています。
-各ディレクトリに `.env` を作成し、必要なキーを設定してください。
-
----
-
-## 🔒 セキュリティとGit管理
-* 秘密情報（`.env`）およびローカルキャッシュ（`*.sqlite`, `*.pyc` 等）は `.gitignore` にて追跡から除外されています。
+# プロジェクトごとの依存パッケージインストール (例: selenium_automation)
+pip install -r selenium_automation/requirements.txt
