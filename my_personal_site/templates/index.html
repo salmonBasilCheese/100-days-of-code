@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nishiki's Personal Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <!-- ヘッダー部分 -->
+        <table class="header-table">
+            <tbody>
+                <tr>
+                    <td>
+                        <img class="profile-img" src="{{ url_for('static', filename='profile.jpg') }}"
+                            alt="Nishiki profile picture">
+                    </td>
+                    <td>
+                        <h1>Nishiki Hosokawa</h1>
+                        <em>Aspiring Python Developer &amp; Automation Engineer</em>
+                        <p>I build web scrapers, automation tools, and explore backend development with Python.
+                            Passionate about problem-solving through code.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+
+        <!-- 学歴・学習実績 -->
+        <h3>Education &amp; Self-Study</h3>
+        <ul>
+            <li><strong>Hosei University</strong> - Bachelor of Arts, Department of Geography</li>
+            <li><strong>University of Helsinki</strong> - Python Programming MOOC (Completed)</li>
+            <li><strong>100 Days of Code: The Complete Python Pro Bootcamp</strong> (In Progress - Day 56)</li>
+        </ul>
+        <hr>
+
+        <!-- 職歴 -->
+        <h3>Work Experience</h3>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Dates</th>
+                    <th>Work</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>6 months</td>
+                    <td>General Assistant at IT Venture Company, Tokyo</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+
+        <!-- スキル -->
+        <h3>Skills</h3>
+        <table class="content-table">
+            <tbody>
+                <tr>
+                    <td>Python (Automation &amp; Scraping)</td>
+                    <td>⭐️⭐️⭐️⭐️</td>
+                </tr>
+                <tr>
+                    <td>Selenium &amp; Playwright</td>
+                    <td>⭐️⭐️⭐️⭐️</td>
+                </tr>
+                <tr>
+                    <td>Flask &amp; Web Development</td>
+                    <td>⭐️⭐️⭐️</td>
+                </tr>
+                <tr>
+                    <td>English (CEFR B1 / Self-Study)</td>
+                    <td>⭐️⭐️⭐️</td>
+                </tr>
+                <tr>
+                    <td>Git &amp; GitHub</td>
+                    <td>⭐️⭐️⭐️</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+
+        <!-- ナビゲーションリンク -->
+        <div class="footer-nav">
+            <a href="#">My Hobbies (Coming Soon)</a>
+            <a href="mailto:pishiki.hosokawa@gmail.com">Contact Me</a> <!-- メール起動にする例 -->
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #334155;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* メインコンテンツのコンテナ（中央配置・最大幅制限） */
+.container {
+  background-color: #ffffff;
+  max-width: 800px;
+  width: 100%;
+  padding: 48px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+h1 {
+  color: #0f172a;
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px 0;
+}
+
+h3 {
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+p {
+  margin: 0 0 12px 0;
+  color: #475569;
+}
+
+em {
+  color: #2563eb;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.05rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 32px 0;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Profile Image & Header Table
+   ========================================================================== */
+/* 正方形画像を正円（丸形）にし、控えめな枠線と影を付与 */
+.profile-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  /* 角丸にしたい場合は 16px などに変更可能 */
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: block;
+}
+
+.header-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.header-table td {
+  vertical-align: middle;
+}
+
+.header-table td:first-child {
+  width: 180px;
+}
+
+/* ==========================================================================
+   Lists & Data Tables
+   ========================================================================== */
+ul {
+  padding-left: 20px;
+  margin: 0 0 24px 0;
+}
+
+li {
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+.content-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 24px 0;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.content-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.content-table tr:hover {
+  background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   Footer Navigation
+   ========================================================================== */
+.footer-nav {
+  margin-top: 32px;
+  display: flex;
+  gap: 20px;
+}
+
+.footer-nav a {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  color: #334155;
+}
+
+.footer-nav a:hover {
+  background-color: #e2e8f0;
+  text-decoration: none;
+  color: #0f172a;
+}
