@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinDog</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+  <!-- SVG Icons Definition -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="check2-circle" viewBox="0 0 16 16">
+      <path
+        d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+      <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+    </symbol>
+    <symbol id="bullseye" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+      <path d="M8 13A5 5 0 1 1 8 3a5 5 0 0 1 0 10zm0 1A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
+      <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+      <path d="M9.5 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+    </symbol>
+    <symbol id="heart-fill" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+    </symbol>
+    <symbol id="apple" viewBox="0 0 16 16">
+      <path
+        d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.937-.133-1.752.11-2.404.576-1.173.839-1.92 2.396-1.92 4.195 0 1.127.272 2.383.805 3.52.548 1.168 1.36 2.355 2.316 2.355.772 0 1.096-.512 2.214-.512 1.12 0 1.408.512 2.247.512.983 0 1.835-1.187 2.399-2.355.337-.698.544-1.255.574-1.332z" />
+    </symbol>
+    <symbol id="google-play" viewBox="0 0 16 16">
+      <path
+        d="M14.222 9.374c1.037-.61 1.037-1.637 0-2.248L11.228 5.46 8.59 8.1 11.228 10.74l2.994-1.366zm-4.012 1.908-2.15-2.15-6.57 6.572c.426.44 1.15.54 1.87.12l6.85-4.542zm-8.72-9.616c-.07.16-.11.34-.11.54v11.58c0 .2.04.38.11.54l6.45-6.33-6.45-6.33zm1.87-.12 6.85 4.542 2.15-2.15-6.85-4.542c-.72-.42-1.444-.32-1.87.12z" />
+    </symbol>
+  </svg>
+
+  <!-- Title Section -->
+  <section id="title" class="gradient-background">
+    <div class="container col-xxl-8 px-4 pt-5">
+      <div class="row flex-lg-row-reverse align-items-center g-5 pt-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img src="images/iphone.png" class="d-block mx-lg-auto img-fluid" alt="iPhone App Mockup" height="200"
+            loading="lazy">
+        </div>
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Meet new and interesting dogs nearby.</h1>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <button type="button" class="btn btn-light btn-lg px-4 me-md-2">
+              <i class="bi bi-apple me-2"></i>Download
+            </button>
+            <button type="button" class="btn btn-outline-light btn-lg px-4">
+              <i class="bi bi-google-play me-2"></i>Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features">
+    <div class="container px-4 py-5" id="hanging-icons">
+      <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start">
+          <div
+            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            <svg class="bi" width="1em" height="1em">
+              <use xlink:href="#check2-circle" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="fs-2 text-body-emphasis">Easy to use.</h3>
+            <p>So easy to use, even your dog could do it.</p>
+          </div>
+        </div>
+        <div class="col d-flex align-items-start">
+          <div
+            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            <svg class="bi" width="1em" height="1em">
+              <use xlink:href="#bullseye" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="fs-2 text-body-emphasis">Elite Clientele.</h3>
+            <p>We have all the dogs, the greatest dogs.</p>
+          </div>
+        </div>
+        <div class="col d-flex align-items-start">
+          <div
+            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+            <svg class="bi" width="1em" height="1em">
+              <use xlink:href="#heart-fill" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="fs-2 text-body-emphasis">Guaranteed to work.</h3>
+            <p>Find the love of your dog's life or your money back.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section id="testimonial">
+    <div class="p-5 text-center bg-body-tertiary">
+      <div class="container py-5">
+        <h2 class="text-body-emphasis">"I no longer have to sniff other dogs for love. I've found the hottest Corgi on
+          TinDog. Woof."</h2>
+        <img class="profile-img mt-5" src="images/dog-img.jpg" alt="dog-profile">
+        <p class="col-lg-8 mx-auto lead mt-2 text-body-secondary">Pebbles, New York</p>
+        <div class="container mt-5">
+          <div class="row align-items-center justify-content-center g-4">
+            <div class="col-6 col-md-3"><img src="images/techcrunch.png" alt="TechCrunch" height="30"></div>
+            <div class="col-6 col-md-3"><img src="images/mashable.png" alt="Mashable" height="30"></div>
+            <div class="col-6 col-md-3"><img src="images/bizinsider.png" alt="Business Insider" height="30"></div>
+            <div class="col-6 col-md-3"><img src="images/tnw.png" alt="TNW" height="30"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing">
+    <div class="container py-5">
+      <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+        <h2 class="display-4 fw-normal text-body-emphasis">A Plan for Every Dog's Needs</h2>
+        <p class="fs-5 text-body-secondary">Simple and affordable price plans for you and your dog.</p>
+      </div>
+      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">Chihuahua</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">$0<small class="text-body-secondary fw-light">/mo</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>5 Matches Per Day</li>
+                <li>10 Messages Per Day</li>
+                <li>Unlimited App Usage</li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-outline-light">Sign up for free</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">Labrador</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">$15<small class="text-body-secondary fw-light">/mo</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Unlimited Matches</li>
+                <li>Unlimited Messages</li>
+                <li>Unlimited App Usage</li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-light">Get started</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm border-light">
+            <div class="card-header py-3 text-bg-light border-light">
+              <h4 class="my-0 fw-normal">Mastiff</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">$29<small class="text-body-secondary fw-light">/mo</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Pirority Listing</li>
+                <li>Unlimited Matches &amp; Messages</li>
+                <li>Unlimited App Usage</li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-light">Contact us</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <section id="footer" class="gradient-background">
+    <div class="container">
+      <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 border-top">
+        <div class="col mb-3">
+          <p class="text-body-secondary">© TinDog</p>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
