@@ -1,10 +1,19 @@
-from pathlib import Path
 import json
-from flask import Flask, render_template, abort
+import os
+import smtplib
+from pathlib import Path
+from dotenv import load_dotenv
+from flask import Flask, render_template, request, abort
+
+# .env ファイルから環境変数を読み込む
+load_dotenv()
 
 app = Flask(__name__)
 
-# プロジェクト直下の blog-data.txt を絶対パスで安全に参照
+# 環境変数から安全に取得
+OWN_EMAIL = os.environ.get("OWN_EMAIL")
+OWN_PASSWORD = os.environ.get("OWN_PASSWORD")
+
 DATA_FILE_PATH = Path(__file__).resolve().parent / "blog-data.txt"
 
 
@@ -15,6 +24,17 @@ def get_posts_data():
             return json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         return []
+
+
+def send_email(name, email, phone, message):
+    """お問い合わせ内容を管理者のGmailへ送信する。"""
+    email_message = f"Subject:New Message from Blog\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:\n{message}"
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        connection.starttls()
+        connection.login(user=OWN_EMAIL, password=OWN_PASSWORD)
+        connection.sendmail(
+            from_addr=OWN_EMAIL, to_addrs=OWN_EMAIL, msg=email_message.encode("utf-8")
+        )
 
 
 @app.route("/")
@@ -28,21 +48,35 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        message = request.form.get("message")
+
+        print(f"Name: {name}")
+        print(f"Email: {email}")
+        print(f"Phone: {phone}")
+        print(f"Message: {message}")
+
+        try:
+            send_email(name=name, email=email, phone=phone, message=message)
+        except Exception as e:
+            print(f"メール送信エラー: {e}")
+
+        return render_template("contact.html", msg_sent=True)
+
+    return render_template("contact.html", msg_sent=False)
 
 
 @app.route("/post/<int:index>")
 def show_post(index):
     posts = get_posts_data()
-    # index (id) に合致する記事を抽出
     requested_post = next((post for post in posts if post.get("id") == index), None)
-
-    # 存在しない記事IDへのアクセスは404エラーを返却
     if requested_post is None:
         abort(404)
-
     return render_template("post.html", post=requested_post)
 
 
